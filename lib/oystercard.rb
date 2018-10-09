@@ -18,8 +18,17 @@ class OysterCard
     @balance -= amount
   end
 
-  def in_journey? 
+  def in_journey?
     @in_journey
+  end
+
+  def touch_in
+    raise "Not enough money on card" if @balance < 1
+    @in_journey = true
+  end
+
+  def touch_out
+    @in_journey = false
   end
 
 end

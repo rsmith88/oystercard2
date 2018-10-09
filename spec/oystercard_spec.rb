@@ -24,4 +24,19 @@ describe OysterCard do
     expect(subject).not_to be_in_journey
   end
 
+  it "allows touch in to start a journey" do
+    subject.top_up(5)
+    subject.touch_in
+    expect(subject).to be_in_journey
+  end
+
+  it "allows touch out to end a journey" do
+    subject.touch_out
+    expect(subject).not_to be_in_journey
+  end
+
+  it "raises if balance is below the minimum balance on touch in" do
+    expect{subject.touch_in}.to raise_error "Not enough money on card"
+  end
+
 end
