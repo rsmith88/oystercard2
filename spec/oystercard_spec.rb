@@ -2,6 +2,9 @@ require "oystercard.rb"
 
 describe OysterCard do
 
+  let(:station) {double :station, name: :aldgate}
+  
+
   it { expect(subject.balance).to eq 0 }
 
   it { is_expected.to respond_to(:top_up).with(1).argument }
@@ -28,13 +31,12 @@ describe OysterCard do
   end
 
   it "raises if balance is below the minimum balance on touch in" do
-    expect{subject.touch_in}.to raise_error "Not enough money on card"
+    expect{subject.touch_in(station)}.to raise_error "Not enough money on card"
   end
 
 
   context 'has £5 on card and touches in' do
 
-    let(:station) {double :station, name: :aldgate}
 
     before do
       subject.top_up(5)
