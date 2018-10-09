@@ -16,19 +16,11 @@ describe OysterCard do
     .to raise_error "Maximum limit (£#{max_balance}) exceeded"
   end
 
-  it 'deducts from balance' do
-    expect{subject.deduct(5)}.to change{subject.balance}.by -5
-  end
-
   it 'newly created card in not in journey' do
     expect(subject).not_to be_in_journey
   end
 
-  it "allows touch in to start a journey" do
-    subject.top_up(5)
-    subject.touch_in
-    expect(subject).to be_in_journey
-  end
+
 
   it "allows touch out to end a journey" do
     subject.touch_out
@@ -39,4 +31,28 @@ describe OysterCard do
     expect{subject.touch_in}.to raise_error "Not enough money on card"
   end
 
+
+  context 'has £5 on card and touches in' do
+
+    let(:station) {double :station, name: :aldgate}
+
+    before do
+      subject.top_up(5)
+      subject.touch_in(station)
+    end
+
+    it "allows touch in to start a journey" do
+      expect(subject).to be_in_journey
+    end
+
+    it 'deducts minimum charge from card on touch out' do
+      min_fare = described_class::MIN_FARE
+      expect {subject.touch_out}.to change{subject.balance}.by -min_fare
+    end
+
+    it 'stores entry station when touched in' do
+      expect(subject.entry_station).to eq :aldgate
+    end
+
+  end
 end
